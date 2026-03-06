@@ -1,0 +1,35 @@
+{
+	"dependencies": {
+		"@types/cookie-parser": "^1.4.10",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.6",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/multer": "^2.0.0",
+		"@types/node": "^25.3.3",
+		"bcryptjs": "^3.0.3",
+		"cloudinary": "^2.9.0",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.6",
+		"dotenv": "^17.3.1",
+		"express": "^5.2.1",
+		"jsonwebtoken": "^9.0.3",
+		"multer": "^2.1.0",
+		"multer-storage-cloudinary": "^4.0.0",
+		"mysql2": "^3.18.2",
+		"nodemon": "^3.1.14",
+		"sequelize": "^6.37.7",
+		"slugify": "^1.6.6",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.3"
+	},
+	"name": "hotelbooking",
+	"version": "1.0.0",
+	"main": "index.js",
+	"devDependencies": {},
+	"scripts": {
+		"dev": "nodemon index.ts"
+	},
+	"author": "",
+	"license": "ISC",
+	"description": ""
+}
