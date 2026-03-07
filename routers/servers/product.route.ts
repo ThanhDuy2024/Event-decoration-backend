@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteProduct, getOneProduct, getProduct, postProduct, putProduct } from "../../controllers/servers/products.controller";
+import { deleteProduct, getOneProduct, getProduct, postProduct, putProduct, resetProduct } from "../../controllers/servers/products.controller";
 import multer from "multer";
 import { storage } from "../../configs/cloudinary.config";
 const router = Router();
@@ -15,4 +15,5 @@ router.get('/list', getProduct);
 router.put('/edit/:id', upload.single('image'), putProduct);
 router.get('/list/:id', getOneProduct);
 router.delete('/delete/:id', deleteProduct);
+router.put('/reset/:id', resetProduct);
 export default router;

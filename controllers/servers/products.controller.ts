@@ -2,7 +2,7 @@ import { Response } from "express";
 import { admin } from "../../interfaces/confirm.interface";
 import { Product } from "../../models/products.model";
 import { Categories } from "../../models/categories.model";
-import { Op, where } from "sequelize";
+import { Op } from "sequelize";
 import { statusList } from "../../helpers/variable.helper";
 import { Admin } from "../../models/admins.model";
 import { ProductImages } from "../../models/productImages.model";
@@ -280,6 +280,27 @@ export const deleteProduct = async (req: admin, res: Response) => {
     res.status(400).json({
       code: 'bad request',
       message: 'Server error'
+    })
+  }
+}
+
+export const resetProduct = async (req: admin, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findByPk(Number(id));
+
+    await product?.update({
+      status: statusList.inactive,
+    });
+    res.status(200).json({
+      code: "Ok",
+      message: "A product has reseted!"
+    })
+  } catch (error) {
+    res.status(404).json({
+      code: "Not found!",
+      message: "A product not found!"
     })
   }
 }
