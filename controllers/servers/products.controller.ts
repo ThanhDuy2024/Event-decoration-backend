@@ -5,12 +5,12 @@ import { Categories } from "../../models/categories.model";
 import { Op, where } from "sequelize";
 import { statusList } from "../../helpers/variable.helper";
 import { Admin } from "../../models/admins.model";
-import { Json } from "sequelize/lib/utils";
+import { ProductImages } from "../../models/productImages.model";
 
 export const postProduct = async (req: admin, res: Response) => {
   try {
-    if (req.file) {
-      req.body.image = req.file.path;
+    if (req.files && !Array.isArray(req.files) && req.files.image && req.files.image[0]) {
+      req.body.image = req.files.image[0].path;
     } else {
       delete req.body.image;
     };
@@ -42,6 +42,15 @@ export const postProduct = async (req: admin, res: Response) => {
 
     const product: any = await Product.create(data);
     await product.setCategories(categories);
+
+    if (req.files && !Array.isArray(req.files) && req.files.images) {
+      for (const item of req.files.images) {
+        await product.createProductImage({
+          productId: product.id,
+          images: item.path,
+        });
+      }
+    }
     res.status(200).json({
       code: 'ok',
       message: 'The product create complete!'
@@ -64,6 +73,10 @@ export const getProduct = async (req: admin, res: Response) => {
         {
           model: Categories,
           where: {},
+        },
+        {
+          model: ProductImages,
+          as: "productImages"
         },
       ],
       where: {
@@ -163,9 +176,25 @@ export const getProduct = async (req: admin, res: Response) => {
 
 export const getOneProduct = async (req: admin, res: Response) => {
   try {
+    const { id } = req.params;
+
+    const product = await Product.findOne({
+      include: [
+        {
+          model: Categories,
+        }
+      ],
+      where: {
+        id: id,
+        status: {
+          [Op.in]: [statusList.active, statusList.inactive],
+        }
+      }
+    });
+
     res.status(200).json({
       code: 'ok',
-      message: 'The product create complete!'
+      data: product,
     })
   } catch (error) {
     console.log(error);
@@ -235,9 +264,16 @@ export const putProduct = async (req: admin, res: Response) => {
 
 export const deleteProduct = async (req: admin, res: Response) => {
   try {
+    const { id } = req.params;
+
+    const product: any = await Product.findByPk(Number(id));
+    await product.update({
+      status: 'delete'
+    });
+
     res.status(200).json({
       code: 'ok',
-      message: 'The product create complete!'
+      message: 'The product delete complete!'
     })
   } catch (error) {
     console.log(error);

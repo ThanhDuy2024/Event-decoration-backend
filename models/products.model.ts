@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../configs/mysqlDatabase";
 import { Categories } from "./categories.model";
+import { ProductImages } from "./productImages.model";
 
 export const Product = sequelize.define('products', {
   productName: {
@@ -42,4 +43,12 @@ Categories.belongsToMany(Product, {
 Product.belongsToMany(Categories, {
   through: 'product_categories',
   foreignKey: "productId"
+});
+
+Product.hasMany(ProductImages, {
+  foreignKey: "product_id",
+  as: "productImages"
+});
+ProductImages.belongsTo(Product, {
+  foreignKey: 'productId'
 });

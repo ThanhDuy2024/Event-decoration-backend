@@ -13,6 +13,7 @@
 		"dotenv": "^17.3.1",
 		"express": "^5.2.1",
 		"jsonwebtoken": "^9.0.3",
+		"mongoose": "^9.2.4",
 		"multer": "^2.1.0",
 		"multer-storage-cloudinary": "^4.0.0",
 		"mysql2": "^3.18.2",
@@ -25,7 +26,6 @@
 	"name": "hotelbooking",
 	"version": "1.0.0",
 	"main": "index.js",
-	"devDependencies": {},
 	"scripts": {
 		"dev": "nodemon index.ts"
 	},
