@@ -27,3 +27,7 @@ export interface changePasswordDto {
     oldPassword: string,
     newPassword: string,
 }
+
+export interface changeEmailDto {
+    newEmail: string,
+}

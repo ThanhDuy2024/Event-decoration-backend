@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { changePasswordDto, client, loginDto, profileUpdate, registerDto } from "../../interfaces/users.interface";
+import { changeEmailDto, changePasswordDto, client, loginDto, profileUpdate, registerDto } from "../../interfaces/users.interface";
 import { Users } from "../../models/users.model";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
+import { Op } from "sequelize";
 export const registerUsers = async (req: Request, res: Response) => {
   try {
     const data: registerDto = req.body;
@@ -87,7 +88,7 @@ export const loginUsers = async (req: Request, res: Response) => {
 
     res.status(200).json({
       code: 'ok',
-      message: 'Account create complete'
+      message: 'Account login complete'
     })
   } catch (error) {
     console.log(error);
@@ -195,6 +196,47 @@ export const changePassword = async (req: client, res: Response) => {
     res.status(400).json({
       code: 'bad request',
       message: 'Password is not being changed'
+    })
+  }
+}
+
+export const changeEmail = async (req: client, res: Response) => {
+  try {
+    const data: changeEmailDto = req.body;
+
+    const account = await Users.findOne({
+      where: {
+        id: {
+          [Op.not]: req.client.id,
+        },
+        email: data.newEmail,
+      }
+    });
+
+    if (account) {
+      return res.status(400).json({
+        code: 'bad request',
+        message: 'Email has been exist!'
+      }) 
+    };
+
+    await Users.update(
+      { email: data.newEmail },
+      {
+        where: {
+          id: req.client.id
+        },
+      }
+    );
+    res.status(200).json({
+      code: 'ok',
+      message: 'Email is being changed!'
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      code: 'ok',
+      message: 'Email is being not changed!'
     })
   }
 }
