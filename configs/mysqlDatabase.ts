@@ -9,7 +9,7 @@ export const sequelize = new Sequelize('booking', String(process.env.DATABASE_NA
 export const connectDatabase = async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log("Database has connected!");
   } catch (error) {
     console.log(error);
