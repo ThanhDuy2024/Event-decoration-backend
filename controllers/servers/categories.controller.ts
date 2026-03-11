@@ -157,7 +157,7 @@ export const putCategory = async (req: admin, res: Response) => {
     } 
     res.status(200).json({
       code: "Ok",
-      message: "The cateogry is here!"
+      message: "The cateogry update complete!"
     })
   } catch (error) {
     console.log(error);
