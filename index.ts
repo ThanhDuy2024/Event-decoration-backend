@@ -4,12 +4,14 @@ import express from "express";
 import adminRoute from "./routers/servers/index.route";
 import clientRoute from "./routers/clients/index.route";
 import { connectDatabase } from "./configs/mysqlDatabase";
+import { connectRedis } from "./configs/redisConfig";
 
 const app = express();
 const port = process.env.PORT;
 app.use(cookieParser());
 app.use(express.json())
 connectDatabase();
+connectRedis();
 
 app.use('/api/client', clientRoute);
 app.use('/api/admin', adminRoute);

@@ -4,6 +4,8 @@ import { Users } from "../../models/users.model";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
+import { randomOtp } from "../../helpers/randomOtp.helper";
+import { redis } from "../../configs/redisConfig";
 export const registerUsers = async (req: Request, res: Response) => {
   try {
     const data: registerDto = req.body;
@@ -25,23 +27,39 @@ export const registerUsers = async (req: Request, res: Response) => {
     const hash = bcrypt.hashSync(data.password, salt);
     data.password = hash;
 
-    const account = await Users.create({
-      username: data.username,
-      email: data.email,
-      password: data.password,
-    });
+    const otp = randomOtp(5);
 
-    await account.save();
+    await redis.set(`users-otp:${otp}`, JSON.stringify(data));
+
+    await redis.expire(`users-otp:${otp}`, 5 * 60);
     res.status(200).json({
       code: 'ok',
-      message: 'Account has been register'
-    })
+      message: `Otp transfer ${otp}`
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({
       code: 'ok',
       message: 'Account is not register'
     })
+  }
+}
+
+export const otpUsers = async (req: Request, res: Response) => {
+  try {
+    const data: any = await redis.get(`users-otp:${req.body.otp}`);
+    const user = JSON.parse(data);
+    await Users.create(user);
+    res.status(200).json({
+      code: 'success',
+      message: 'Accout create complete'
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      code: 'error',
+      message: 'bad request',
+    });
   }
 }
 
